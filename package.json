@@ -1,0 +1,47 @@
+{
+    "name": "@anglr/server-stuff",
+    "version": "3.0.0-beta.0",
+    "description": "Angular 'stuff' that is available only for server side rendering",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts":
+    {
+        "build": "npm run ngc",
+        "clean": "rimraf dist",
+        "clean:deps": "rimraf node_modules",
+        "clean:all": "npm run clean && npm run clean:deps",
+        "ngc": "ngc",
+        "prepublish": "npm run bundle:package",
+        "postpublish": "npm run clean",
+        "republish": "npm publish --force",
+        "bundle": "webpack",
+        "bundle:min": "webpack --env.minify",
+        "bundle:package": "npm run clean && npm run build && npm run bundle && npm run bundle:min",
+        "deploy:stable": "npp -b",
+        "deploy:next": "npp -p -b -s \"beta\" -t \"next\""
+    },
+    "author": "kukjevov",
+    "license": "MIT",
+    "dependencies":
+    {
+        "@angular/core": ">=4.0.0-rc.5",
+        "@angular/platform-browser": ">=4.0.0-rc.5",
+        "@angular/platform-server": ">=4.0.0-rc.5",
+        "core-js": "~2.4.1",
+        "zone.js": "^0.8.4",
+        "rxjs": "^5.2.0",
+        "@anglr/rest": ">=3.0.0-beta.4"
+    },
+    "peerDependencies":
+    {
+    },
+    "devDependencies":
+    {
+        "@angular/compiler-cli": ">=4.0.0-rc.5",
+        "@angular/compiler": ">=4.0.0-rc.5",
+        "rimraf": "~2.6.1",
+        "typescript": "2.2.1",
+        "webpack": "2.2.1",
+        "npm-publish-package": "~1.2.0"
+    }
+}
