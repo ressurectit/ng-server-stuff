@@ -1,4 +1,4 @@
-import {Provider, NgModuleRef, ApplicationRef, ValueProvider} from "@angular/core";
+import { Provider, NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation } from "@angular/core";
 import {renderModule, renderModuleFactory, INITIAL_CONFIG, platformServer, platformDynamicServer, PlatformState} from "@angular/platform-server";
 import {Utils} from '@anglr/common';
 import * as fs from 'fs';
@@ -24,10 +24,10 @@ function getDocument(filePath: string): string
  * @param progressLoader Indication whether render progress loader when module is loaded
  * @param extraProviders Extra providers used within mainModule
  */
-export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => Provider[], angularProfiler?: boolean, extraProviders?: Provider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: string) => void) => void
+export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => Provider[], progressLoader?: boolean, extraProviders?: Provider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: string) => void) => void
 {
     extraProviders = extraProviders || [];
-    angularProfiler = angularProfiler || false;
+    progressLoader = progressLoader || false;
     getProvidersCallback = getProvidersCallback || ((additionalData: TAdditionalData) => []);
 
     /**
@@ -56,6 +56,25 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
             {
                 const bootstrap = moduleRef.instance['ngOnBootstrap'];
                 bootstrap && bootstrap();
+
+                if(progressLoader)
+                {
+                    let mainComponent = (moduleRef.injector.get(ApplicationRef) as ApplicationRef).components[0];
+                    let factory = moduleRef.injector.get(RendererFactory2) as RendererFactory2;
+                    let renderer = factory.createRenderer(mainComponent.location.nativeElement, 
+                    {
+                        id: 'loaderRenderer',
+                        encapsulation: ViewEncapsulation.None,
+                        styles: [],
+                        data: {}
+                    });
+
+                    let div = renderer.createElement("div");
+                    let innerDiv = renderer.createElement("div");
+                    renderer.addClass(div, "loading-indicator");
+                    renderer.appendChild(div, innerDiv);
+                    renderer.appendChild(mainComponent.location.nativeElement, div);
+                }
 
                 callback(null, moduleRef.injector.get(PlatformState).renderToString());
                 moduleRef.destroy();
