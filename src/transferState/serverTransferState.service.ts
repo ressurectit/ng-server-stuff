@@ -21,7 +21,18 @@ export class ServerTransferStateService extends TransferStateService
         try
         {
             const document: any = this.state.getDocument();
-            const transferStateString = JSON.stringify(this.toJson());
+
+            let transferStateString;
+
+            try
+            {
+                transferStateString = JSON.stringify(this.toJson());
+            }
+            catch(e)
+            {
+                console.warn(`WARNING: '${e.message}' trasfer data will not be used!`);
+                transferStateString = "";
+            }
 
             const renderer = this.rendererFactory.createRenderer(document,
             {
