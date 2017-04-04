@@ -1,6 +1,6 @@
 import { Provider, NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation } from "@angular/core";
 import {renderModule, renderModuleFactory, INITIAL_CONFIG, platformServer, platformDynamicServer, PlatformState} from "@angular/platform-server";
-import {Utils} from '@anglr/common';
+import {Utils, StatusCodeService} from '@anglr/common';
 import * as fs from 'fs';
 
 /**
@@ -24,7 +24,7 @@ function getDocument(filePath: string): string
  * @param progressLoader Indication whether render progress loader when module is loaded
  * @param extraProviders Extra providers used within mainModule
  */
-export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => Provider[], progressLoader?: boolean, extraProviders?: Provider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: string) => void) => void
+export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => Provider[], progressLoader?: boolean, extraProviders?: Provider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
 {
     extraProviders = extraProviders || [];
     progressLoader = progressLoader || false;
@@ -33,7 +33,7 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
     /**
      * Renders application
      */
-    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: string) => void)
+    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void)
     {
         try 
         {
@@ -76,7 +76,15 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
                     renderer.appendChild(mainComponent.location.nativeElement, div);
                 }
 
-                callback(null, moduleRef.injector.get(PlatformState).renderToString());
+                let statusCodeService = moduleRef.injector.get(StatusCodeService);
+                let statusCode: number | null = null;
+
+                if(statusCodeService)
+                {
+                    statusCode = statusCodeService.statusCode;
+                }
+
+                callback(null, {html: moduleRef.injector.get(PlatformState).renderToString(), statusCode});
                 moduleRef.destroy();
             });
         } 
