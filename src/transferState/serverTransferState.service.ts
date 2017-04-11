@@ -42,7 +42,19 @@ export class ServerTransferStateService extends TransferStateService
                 data: {}
             });
 
-            const head = document.children[0].children[0];
+            let tag = document.children[0];
+
+            if(tag.type == 'directive')
+            {
+                tag = document.children[1];
+            }
+
+            if(tag.type == 'tag' && tag.name == 'html')
+            {
+                tag = tag.children[0];
+            }
+
+            const head = tag;
 
             if (head.name !== 'head')
             {
