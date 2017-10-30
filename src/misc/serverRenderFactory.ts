@@ -1,4 +1,4 @@
-import { Provider, NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation } from "@angular/core";
+import {NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation, StaticProvider} from "@angular/core";
 import {renderModule, renderModuleFactory, INITIAL_CONFIG, platformServer, platformDynamicServer, PlatformState} from "@angular/platform-server";
 import {Utils, StatusCodeService} from '@anglr/common';
 import * as fs from 'fs';
@@ -24,7 +24,7 @@ function getDocument(filePath: string): string
  * @param progressLoader Indication whether render progress loader when module is loaded
  * @param extraProviders Extra providers used within mainModule
  */
-export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => Provider[], progressLoader?: boolean, extraProviders?: Provider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
+export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[], progressLoader?: boolean, extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
 {
     extraProviders = extraProviders || [];
     progressLoader = progressLoader || false;
