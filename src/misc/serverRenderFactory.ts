@@ -1,5 +1,5 @@
 import {NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation, StaticProvider} from "@angular/core";
-import {renderModule, renderModuleFactory, INITIAL_CONFIG, platformServer, platformDynamicServer, PlatformState} from "@angular/platform-server";
+import {INITIAL_CONFIG, PlatformState} from "@angular/platform-server";
 import {Utils, StatusCodeService} from '@anglr/common';
 import * as fs from 'fs';
 
@@ -11,20 +11,19 @@ const templateCache: {[key: string]: string} = {};
 /**
  * Get the document at the file path
  */
-function getDocument(filePath: string): string 
+function getDocument(filePath: string): string
 {
     return templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString();
 }
 
 /**
  * Returns function used for rendering app on server
- * @param aot Indication that it is aot build
- * @param mainModule Main module to be bootstrapped
+ * @param getModuleRef Callback used for obtaining bootstrapped ngModuleRef
  * @param getProvidersCallback Callback called when trying to build server providers
  * @param progressLoader Indication whether render progress loader when module is loaded
  * @param extraProviders Extra providers used within mainModule
  */
-export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: any, getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[], progressLoader?: boolean, extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
+export function serverRenderFactory<TAdditionalData>(getModuleRef: (extraProviders: StaticProvider[]) => Promise<NgModuleRef<{}>>, getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[], progressLoader?: boolean, extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
 {
     extraProviders = extraProviders || [];
     progressLoader = progressLoader || false;
@@ -33,16 +32,16 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
     /**
      * Renders application
      */
-    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void)
+    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void): void
     {
-        try 
+        try
         {
             extraProviders = extraProviders.concat(
             [
                 <ValueProvider>
                 {
                     provide: INITIAL_CONFIG,
-                    useValue: 
+                    useValue:
                     {
                         document: getDocument(indexPath),
                         url: url
@@ -50,9 +49,9 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
                 }
             ]).concat(getProvidersCallback(additionalData));
 
-            const moduleRefPromise = aot ? platformServer(extraProviders).bootstrapModuleFactory(mainModule) : platformDynamicServer(extraProviders).bootstrapModule(mainModule);
+            const moduleRefPromise = getModuleRef(extraProviders);
 
-            Utils.common.runWhenModuleStable(moduleRefPromise, (moduleRef: NgModuleRef<{}>) => 
+            Utils.common.runWhenModuleStable(moduleRefPromise, (moduleRef: NgModuleRef<{}>) =>
             {
                 const bootstrap = moduleRef.instance['ngOnBootstrap'];
                 bootstrap && bootstrap();
@@ -61,7 +60,7 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
                 {
                     let mainComponent = (moduleRef.injector.get(ApplicationRef) as ApplicationRef).components[0];
                     let factory = moduleRef.injector.get(RendererFactory2) as RendererFactory2;
-                    let renderer = factory.createRenderer(mainComponent.location.nativeElement, 
+                    let renderer = factory.createRenderer(mainComponent.location.nativeElement,
                     {
                         id: 'loaderRenderer',
                         encapsulation: ViewEncapsulation.None,
@@ -87,8 +86,8 @@ export function serverRenderFactory<TAdditionalData>(aot: boolean, mainModule: a
                 callback(null, {html: moduleRef.injector.get(PlatformState).renderToString(), statusCode});
                 moduleRef.destroy();
             });
-        } 
-        catch (e) 
+        }
+        catch (e)
         {
             callback(e);
         }
