@@ -27,7 +27,7 @@ export function serverRenderFactory<TAdditionalData>(getModuleRef: (extraProvide
 {
     extraProviders = extraProviders || [];
     progressLoader = progressLoader || false;
-    getProvidersCallback = getProvidersCallback || ((additionalData: TAdditionalData) => []);
+    getProvidersCallback = getProvidersCallback || (() => []);
 
     /**
      * Renders application
@@ -53,7 +53,7 @@ export function serverRenderFactory<TAdditionalData>(getModuleRef: (extraProvide
 
             Utils.common.runWhenModuleStable(moduleRefPromise, (moduleRef: NgModuleRef<{}>) =>
             {
-                const bootstrap = moduleRef.instance['ngOnBootstrap'];
+                const bootstrap = (moduleRef.instance as any)['ngOnBootstrap'];
                 bootstrap && bootstrap();
 
                 if(progressLoader)
