@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 4.0.4
+ - added factory method for SSR progress indicator `ssrProgressIndicatorFactory`
+
 ## Version 4.0.3
  - removed `ServerTransferState` service
  - removed `ServerTransferStateModule`
