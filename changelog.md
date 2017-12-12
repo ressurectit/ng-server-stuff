@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.0.3
+ - removed `ServerTransferState` service
+ - removed `ServerTransferStateModule`
+ - completely refactored `serverRenderFactory` helper, now using Angulars `renderModule`
+ - added `ServerProvidersModule` so far empty, no providers
+
 ## Version 4.0.2
  - returned typescript version back to 2.4.2 and removed distJit
 

@@ -1,3 +1,2 @@
-export {ServerTransferStateRestModule} from './modules/serverTransferStateRest.module';
-export {ServerTransferStateService} from './transferState/serverTransferState.service';
-export {serverRenderFactory} from './misc/serverRenderFactory';
+export * from './misc/serverRenderFactory';
+export * from './modules/serverProviders.module';

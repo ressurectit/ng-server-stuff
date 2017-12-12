@@ -1,7 +1,28 @@
-import {NgModuleRef, ApplicationRef, ValueProvider, RendererFactory2, ViewEncapsulation, StaticProvider} from "@angular/core";
-import {INITIAL_CONFIG, PlatformState} from "@angular/platform-server";
-import {Utils, StatusCodeService} from '@anglr/common';
+import {StaticProvider, FactoryProvider, Injector} from "@angular/core";
+import {BEFORE_APP_SERIALIZED} from "@angular/platform-server";
+import {StatusCodeService} from '@anglr/common';
 import * as fs from 'fs';
+
+/**
+ * Interface describing options for server render
+ */
+export interface ServerRenderOptions
+{
+    /**
+     * Html document that should be rendered
+     */
+    document?: string;
+
+    /**
+     * Url that is being rendered
+     */
+    url?: string;
+
+    /**
+     * Extra providers
+     */
+    extraProviders?: StaticProvider[];
+}
 
 /**
  * This holds a cached version of each index used.
@@ -18,74 +39,71 @@ function getDocument(filePath: string): string
 
 /**
  * Returns function used for rendering app on server
- * @param getModuleRef Callback used for obtaining bootstrapped ngModuleRef
+ * @param getRenderPromise Callback used for promise for rendered app into string
  * @param getProvidersCallback Callback called when trying to build server providers
- * @param progressLoader Indication whether render progress loader when module is loaded
  * @param extraProviders Extra providers used within mainModule
  */
-export function serverRenderFactory<TAdditionalData>(getModuleRef: (extraProviders: StaticProvider[]) => Promise<NgModuleRef<{}>>, getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[], progressLoader?: boolean, extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void) => void
+export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options: ServerRenderOptions) => Promise<string>,
+                                                     getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[],
+                                                     extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string|null, result?: {html: string, statusCode?: number|null|undefined}) => void) => void
 {
     extraProviders = extraProviders || [];
-    progressLoader = progressLoader || false;
     getProvidersCallback = getProvidersCallback || (() => []);
 
     /**
      * Renders application
      */
-    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string, result?: {html: string, statusCode?: number}) => void): void
+    return function serverRender(indexPath: string, url: string, additionalData: TAdditionalData, callback: (error: string|null, result?: {html: string, statusCode?: number|null|undefined}) => void): void
     {
+        let statusCode: number|null|undefined = null;
+
         try
         {
-            extraProviders = extraProviders.concat(
-            [
-                <ValueProvider>
-                {
-                    provide: INITIAL_CONFIG,
-                    useValue:
+            extraProviders = extraProviders!
+                .concat(
+                [
                     {
-                        document: getDocument(indexPath),
-                        url: url
+                        provide: StatusCodeService,
+                        deps: []
+                    },
+                    <FactoryProvider>
+                    {
+                        provide: BEFORE_APP_SERIALIZED,
+                        useFactory: (injector: Injector) =>
+                        {
+                            return () =>
+                            {
+                                let statusCodeService = injector.get(StatusCodeService);
+                                
+                                if(statusCodeService)
+                                {
+                                    statusCode = statusCodeService.statusCode;
+                                }
+                            };
+                        },
+                        deps: [Injector],
+                        multi: true
                     }
-                }
-            ]).concat(getProvidersCallback(additionalData));
+                ])
+                .concat(getProvidersCallback!(additionalData));
 
-            const moduleRefPromise = getModuleRef(extraProviders);
-
-            Utils.common.runWhenModuleStable(moduleRefPromise, (moduleRef: NgModuleRef<{}>) =>
-            {
-                const bootstrap = (moduleRef.instance as any)['ngOnBootstrap'];
-                bootstrap && bootstrap();
-
-                if(progressLoader)
+            getRenderPromise({
+                                 document: getDocument(indexPath),
+                                 url,
+                                 extraProviders
+                             })
+                .catch(rejection =>
                 {
-                    let mainComponent = (moduleRef.injector.get(ApplicationRef) as ApplicationRef).components[0];
-                    let factory = moduleRef.injector.get(RendererFactory2) as RendererFactory2;
-                    let renderer = factory.createRenderer(mainComponent.location.nativeElement,
-                    {
-                        id: 'loaderRenderer',
-                        encapsulation: ViewEncapsulation.None,
-                        styles: [],
-                        data: {}
-                    });
-
-                    let div = renderer.createElement("div");
-                    let innerDiv = renderer.createElement("div");
-                    renderer.addClass(div, "loading-indicator");
-                    renderer.appendChild(div, innerDiv);
-                    renderer.appendChild(mainComponent.location.nativeElement, div);
-                }
-
-                let statusCodeService = moduleRef.injector.get(StatusCodeService);
-                let statusCode: number | null = null;
-
-                if(statusCodeService)
+                    callback(rejection);
+                })
+                .then((html: string) =>
                 {
-                    statusCode = statusCodeService.statusCode;
-                }
-
-                callback(null, {html: moduleRef.injector.get(PlatformState).renderToString(), statusCode});
-                moduleRef.destroy();
-            });
+                    callback(null,
+                             {
+                                 html: html,
+                                 statusCode: statusCode
+                             });
+                });
         }
         catch (e)
         {
