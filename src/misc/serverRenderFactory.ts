@@ -62,10 +62,6 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
             extraProviders = extraProviders!
                 .concat(
                 [
-                    {
-                        provide: StatusCodeService,
-                        deps: []
-                    },
                     <FactoryProvider>
                     {
                         provide: BEFORE_APP_SERIALIZED,

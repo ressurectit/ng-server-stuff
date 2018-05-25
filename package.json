@@ -1,9 +1,10 @@
 {
     "name": "@anglr/server-stuff",
-    "version": "5.0.0-beta.1",
+    "version": "5.0.0-beta.2",
     "description": "Angular 'stuff' that is available only for server side rendering",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
+    "sideEffects": false,
     "scripts": {
         "build": "npm run ngc",
         "postbuild": "copyfiles -u 2 dist/src/**/*.* dist && copyfiles -u 2 dist/testing/**/*.* testing && rimraf dist/src dist/dist dist/node_modules dist/testing",
@@ -30,8 +31,8 @@
         "@angular/core": ">=6.0.0",
         "@angular/common": ">=6.0.0",
         "@angular/platform-server": ">=6.0.0",
-        "@anglr/common": ">=5.0.0-beta.1",
-        "@anglr/rest": ">=5.0.0-beta.1"
+        "@anglr/common": ">=5.0.0-beta.2",
+        "@anglr/rest": ">=5.0.0-beta.2"
     },
     "devDependencies": {
         "@angular/animations": "^6.0.0",
@@ -40,8 +41,8 @@
         "@angular/http": "^6.0.0",
         "@angular/platform-server": "^6.0.0",
         "rxjs": "^6.0.0",
-        "@anglr/common": "^5.0.0-beta.1",
-        "@anglr/rest": "^5.0.0-beta.1",
+        "@anglr/common": "^5.0.0-beta.2",
+        "@anglr/rest": "^5.0.0-beta.2",
         "@anglr/types": "1.1.12",
         "@types/jasmine": "~2.8.7",
         "@types/node": "^10.0.8",
@@ -68,7 +69,7 @@
         "css-loader": "~0.28.11",
         "file-loader": "~1.1.11",
         "style-loader": "~0.21.0",
-        "@compodoc/compodoc": "~1.0.9",
+        "@compodoc/compodoc": "~1.1.3",
         "rimraf": "~2.6.2",
         "copyfiles": "~2.0.0",
         "typescript": "~2.7.2",
