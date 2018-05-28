@@ -1,7 +1,10 @@
 # Changelog
 
+## Version 5.0.0
+ - stabilized for angular v6
+
 ## Version 5.0.0-beta.2
- - `@anglr/rest` is now marked as *sideEffects* free
+ - `@anglr/server-stuff` is now marked as *sideEffects* free
  - `StatusCodeService` is no longer provided by `serverRenderFactory`
 
 ## Version 5.0.0-beta.1
