@@ -2,9 +2,9 @@
     "name": "@anglr/server-stuff",
     "version": "0.0.0-placeholder",
     "description": "Angular 'stuff' that is available only for server side rendering",
-    "module": "./dist/es5/server.js",
-    "esm2015": "./dist/es2015/server.js",
-    "typings": "./server.d.ts",
+    "module": "./dist/es5/server-stuff.js",
+    "esm2015": "./dist/es2015/server-stuff.js",
+    "typings": "./server-stuff.d.ts",
     "sideEffects": false,
     "scripts": {
         "build": "ngc -p tsconfig.es5.json && ngc -p tsconfig.es2015.json",

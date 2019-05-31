@@ -17,7 +17,7 @@
         "annotateForClosureCompiler": true,
         "strictMetadataEmit": false,
         "skipTemplateCodegen": true,
-        "flatModuleOutFile": "server.js",
-        "flatModuleId": "@anglr/server"
+        "flatModuleOutFile": "server-stuff.js",
+        "flatModuleId": "@anglr/server-stuff"
     }
 }
