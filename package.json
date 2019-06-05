@@ -32,8 +32,8 @@
         "@angular/core": ">=8.0.0",
         "@angular/common": ">=8.0.0",
         "@angular/platform-server": ">=8.0.0",
-        "@anglr/common": ">=6.0.0-beta",
-        "@anglr/rest": ">=6.0.0-beta"
+        "@anglr/common": ">=6.0.0",
+        "@anglr/rest": ">=6.0.0"
     },
     "devDependencies": {
         "@angular/animations": "^8.0.0",
@@ -41,8 +41,8 @@
         "@angular/common": "^8.0.0",
         "@angular/platform-server": "^8.0.0",
         "rxjs": "^6.5.0",
-        "@anglr/common": "^6.0.0-beta",
-        "@anglr/rest": "^6.0.0-beta",
+        "@anglr/common": "^6.0.0",
+        "@anglr/rest": "^6.0.0",
         "@types/jasmine": "~2.8.7",
         "@types/node": "^10.0.8",
         "@angular/forms": "^8.0.0",
