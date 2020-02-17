@@ -39,9 +39,9 @@ function getDocument(filePath: string): string
 
 /**
  * Returns function used for rendering app on server
- * @param getRenderPromise Callback used for promise for rendered app into string
- * @param getProvidersCallback Callback called when trying to build server providers
- * @param extraProviders Extra providers used within mainModule
+ * @param getRenderPromise - Callback used for promise for rendered app into string
+ * @param getProvidersCallback - Callback called when trying to build server providers
+ * @param extraProviders - Extra providers used within mainModule
  */
 export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options: ServerRenderOptions) => Promise<string>,
                                                      getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[],

@@ -1,6 +1,6 @@
 /**
  * Factory method that creates method which appends loading progress indicator into html
- * @param document Html document that will have loading indicator inserted into
+ * @param document - Html document that will have loading indicator inserted into
  */
 export function ssrProgressIndicatorFactory(document: HTMLDocument)
 {
