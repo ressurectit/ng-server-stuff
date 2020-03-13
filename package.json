@@ -7,8 +7,10 @@
     "typings": "./server-stuff.d.ts",
     "sideEffects": false,
     "scripts": {
-        "build": "ngc -p tsconfig.es5.json && ngc -p tsconfig.es2015.json",
-        "clean": "rimraf dist tests **/tsdoc-metadata.json src/**/*.d.ts src/**/*.d.ts.map */*.metadata.json ./*.metadata.json ./*.d.ts ./*d.ts.map */dist",
+        "build": "npm run build:server-stuff && npm run build:hotkeys",
+        "build:server-stuff": "ngc -p tsconfig.es5.json && ngc -p tsconfig.es2015.json",
+        "build:hotkeys": "ngc -p hotkeys/tsconfig.es5.json && ngc -p hotkeys/tsconfig.es2015.json",
+        "clean": "rimraf dist tests **/tsdoc-metadata.json src/**/*.d.ts src/**/*.d.ts.map hotkeys/**/*.d.ts hotkeys/**/*.d.ts.map */*.metadata.json ./*.metadata.json ./*.d.ts ./*d.ts.map */dist",
         "clean:duplicates": "rimraf */dist/*/src",
         "clean:deps": "rimraf package-lock.json node_modules",
         "clean:all": "npm run clean && npm run clean:deps",
@@ -24,16 +26,24 @@
         "pretest": "webpack",
         "test": "karma start karma.conf.js",
         "doc": "path-exists docs && npm run doc:generate || echo \"No docs generated!\"",
-        "doc:generate": "npm run doc:generate:server-stuff && npm run doc:save",
+        "doc:generate": "npm run doc:generate:server-stuff && npm run doc:generate:hotkeys && npm run doc:save",
         "doc:save": "cd docs && git add . && git commit -m \"INT: updated API docs ng-server-stuff\" && git push && cd ..",
         "doc:generate:server-stuff": "rimraf docs/content/api/ng-server-stuff && npm run doc:json:server-stuff && npm run doc:md:server-stuff",
         "doc:json:server-stuff": "api-extractor run --local --verbose -c api-extractor.json",
-        "doc:md:server-stuff": "api-documenter markdown -i temp -o docs/content/api/ng-server-stuff && rimraf temp"
+        "doc:md:server-stuff": "api-documenter markdown -i temp -o docs/content/api/ng-server-stuff && rimraf temp",
+        "doc:generate:hotkeys": "rimraf docs/content/api/ng-server-stuff-hotkeys && npm run doc:json:hotkeys && npm run doc:md:hotkeys",
+        "doc:json:hotkeys": "api-extractor run --local --verbose -c hotkeys/api-extractor.json",
+        "doc:md:hotkeys": "api-documenter markdown -i hotkeys/temp -o docs/content/api/ng-server-stuff-hotkeys && rimraf hotkeys/temp"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/ressurectit/ng-server-stuff.git"
     },
+    "keywords": [
+        "angular",
+        "server-side-rendering",
+        "ssr"
+    ],
     "author": "kukjevov",
     "license": "MIT",
     "bugs": {
@@ -45,7 +55,8 @@
         "@angular/common": ">=9.0.0",
         "@angular/platform-server": ">=9.0.0",
         "@anglr/common": ">=7.0.0",
-        "@anglr/rest": ">=7.0.0"
+        "@anglr/rest": ">=7.0.0",
+        "angular2-hotkeys": "~2.2.0"
     },
     "devDependencies": {
         "@angular/animations": "^9.0.0",
@@ -55,6 +66,7 @@
         "rxjs": "^6.5.0",
         "@anglr/common": "^7.0.0",
         "@anglr/rest": "^7.0.0",
+        "angular2-hotkeys": "~2.2.0",
         "@types/jasmine": "~2.8.7",
         "@types/node": "^11.15.6",
         "@angular/compiler-cli": "^9.0.0",

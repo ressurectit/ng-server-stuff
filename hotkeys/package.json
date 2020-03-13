@@ -1,0 +1,8 @@
+    {
+    "name": "@anglr/server-stuff-hotkeys",
+    "module": "./dist/es5/hotkeys/index.js",
+    "esm2015": "./dist/es2015/hotkeys/index.js",
+    "esm5": "./dist/es5/hotkeys/index.js",
+    "typings": "./index.d.ts",
+    "sideEffects": false
+}

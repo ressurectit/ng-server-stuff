@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 7.1.0
+
+- added *subpackage* `@anglr/server-stuff/hotkeys`
+- *subpackage* `@anglr/server-stuff/hotkeys`
+   - added `ServerHotkeysModule` containing mocks for *server side rendering* for `HotkeysService`
+
 ## Version 7.0.0
 
 - updated to latest stable *Angular* 9

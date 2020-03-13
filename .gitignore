@@ -4,11 +4,11 @@
 /tests
 temp/
 /src/**/*.d.ts
-/src/**/*.json
+/hotkeys/**/*.d.ts
 /*/dist
 /*.d.ts
-/*.metadata.json
 
+*.metadata.json
 package-lock.json
 tsdoc-metadata.json
 *.log
