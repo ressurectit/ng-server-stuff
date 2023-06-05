@@ -1,24 +1,17 @@
 /.vscode
-/src
-/tests
-.jsbeautifyrc
-tsconfig.json
-tsconfig.es5.json
-tsconfig.es2015.json
-webpack.config.js
-karma.conf.js
-karma-dependencies-shim.js
-karma-test-shim.ts
+temp/
+.eslintrc.json
+api-extractor.json
+appveyor.yml
 ngv.config.json
+tsconfig.json
+tsdoc-metadata.json
 
 *.ts
 !*.d.ts
-!/src/**/*.d.ts
-!/hotkeys/**/*.d.ts
 
+*~
+*.orig
 *.log
 *.spec.js
 *.spec.d.ts
-
-karma-common-shim.d.ts
-karma-test-shim.d.ts

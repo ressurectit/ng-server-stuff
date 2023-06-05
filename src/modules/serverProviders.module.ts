@@ -15,15 +15,15 @@ import {ssrProgressIndicatorFactory} from '../misc/ssrProgressIndicator.factory'
 export class ServerProvidersModule
 {
     //######################### public methods #########################
-    
+
     /**
      * Returns module with all server providers
      */
-    public static forRoot(): ModuleWithProviders 
+    public static forRoot(): ModuleWithProviders<ServerProvidersModule>
     {
         return {
             ngModule: ServerProvidersModule,
-            providers: 
+            providers:
             [
                 <FactoryProvider>
                 {

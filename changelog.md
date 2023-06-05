@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 8.0.0 (2023-06-05)
+
+### BREAKING CHANGES
+
+- minimal supported version of `@angular` is `16.0.3`
+- minimal supported version of `@rxjs` is `7.5.7`
+- minimal supported version of `@anglr/common` is `16.0.0`
+- dropped support of `NodeJs` lower than `16.14`
+
 ## Version 7.1.0
 
 - added *subpackage* `@anglr/server-stuff/hotkeys`

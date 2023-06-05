@@ -1,7 +1,7 @@
-import {StaticProvider, FactoryProvider, Injector} from "@angular/core";
-import {BEFORE_APP_SERIALIZED} from "@angular/platform-server";
+import {StaticProvider, FactoryProvider, Injector} from '@angular/core';
+import {BEFORE_APP_SERIALIZED} from '@angular/platform-server';
 import {StatusCodeService} from '@anglr/common';
-import * as fs from 'fs';
+import fs from 'fs';
 
 /**
  * Interface describing options for server render
@@ -69,7 +69,7 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
                         {
                             return () =>
                             {
-                                let statusCodeService = injector.get(StatusCodeService);
+                                const statusCodeService = injector.get(StatusCodeService);
                                 
                                 if(statusCodeService)
                                 {
@@ -92,18 +92,18 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
                 {
                     callback(rejection);
                 })
-                .then((html: string) =>
+                .then((html: string|void) =>
                 {
                     callback(null,
                              {
-                                 html: html,
+                                 html: html ?? '',
                                  statusCode: statusCode
                              });
                 });
         }
         catch (e)
         {
-            callback(e);
+            callback(`${e}`);
         }
-    }
+    };
 }

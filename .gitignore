@@ -1,16 +1,12 @@
 /node_modules
-/dist
+/es2022
 /docs
-/tests
 temp/
-/src/**/*.d.ts
-/hotkeys/**/*.d.ts
-/*/dist
-/*.d.ts
 
-*.metadata.json
 package-lock.json
 tsdoc-metadata.json
+*.d.ts
+!typings/**/*.d.ts
 *.log
 *.bak
 *.orig
