@@ -1,14 +1,19 @@
-import {Hotkey, HotkeysService} from 'angular2-hotkeys';
+import {Hotkey} from 'angular2-hotkeys';
+import {Subject} from 'rxjs';
 
 /**
  * Server hotkeys service
  */
-export class ServerHotkeysService extends HotkeysService
+export class ServerHotkeysService
 {
+    public hotkeys: Hotkey[] = [];
+    public pausedHotkeys: Hotkey[] = [];
+    public cheatSheetToggle: Subject<unknown> = new Subject();
+
     /**
      * @inheritdoc
      */
-    public override add(): Hotkey|Hotkey[]
+    public add(): Hotkey|Hotkey[]
     {
         return [];
     }
@@ -16,7 +21,7 @@ export class ServerHotkeysService extends HotkeysService
     /**
      * @inheritdoc
      */
-    public override remove(): Hotkey|Hotkey[]
+    public remove(): Hotkey|Hotkey[]
     {
         return [];
     }
@@ -24,7 +29,7 @@ export class ServerHotkeysService extends HotkeysService
     /**
      * @inheritdoc
      */
-    public override get(): Hotkey|Hotkey[]
+    public get(): Hotkey|Hotkey[]
     {
         return [];
     }
@@ -32,7 +37,7 @@ export class ServerHotkeysService extends HotkeysService
     /**
      * @inheritdoc
      */
-    public override pause(): Hotkey|Hotkey[]
+    public pause(): Hotkey|Hotkey[]
     {
         return [];
     }
@@ -40,7 +45,7 @@ export class ServerHotkeysService extends HotkeysService
     /**
      * @inheritdoc
      */
-    public override unpause(): Hotkey|Hotkey[]
+    public unpause(): Hotkey|Hotkey[]
     {
         return [];
     }
@@ -48,7 +53,7 @@ export class ServerHotkeysService extends HotkeysService
     /**
      * @inheritdoc
      */
-    public override reset(): void
+    public reset(): void
     {
     }
 }
