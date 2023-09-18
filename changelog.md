@@ -4,18 +4,12 @@
 
 ### Features
 
-- new `HotkeysCheatsheetSAComponent` component, that is component used for displaying current active hotkeys as cheat cheet
-   - **implements**
-      - `OnInit`
-      - `OnDestroy`
-   - **inputs**
-      - `title` title displayed in header of cheat sheet
-   - **method**
-      - `toggleCheatSheet` toggles cheatsheet visibility
 - new `provideSsrProgressIndicator` function, that provides Server side progress indicator
 - new `ServerRenderProviders` interface
    - `platformProviders` additional platform providers
    - `appProviders` additional app providers
+- new `provideServerHotkeysService` function, that provides `provideServerHotkeysService`
+- new `ServerHotkeysService` service, that is server hotkeys service
 
 ### BREAKING CHANGES
 
