@@ -1,10 +1,14 @@
+import {inject} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+
 /**
  * Factory method that creates method which appends loading progress indicator into html
- * @param document - Html document that will have loading indicator inserted into
  */
-export function ssrProgressIndicatorFactory(document: Document)
+export function ssrProgressIndicatorFactory(): () => void
 {
-    return () =>
+    const document: Document = inject(DOCUMENT);
+
+    return (): void =>
     {
         const div = document.createElement('div');
         const innerDiv = document.createElement('div');

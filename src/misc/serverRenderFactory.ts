@@ -1,12 +1,28 @@
-import {StaticProvider, FactoryProvider, Injector} from '@angular/core';
+import {StaticProvider, FactoryProvider, Injector, Provider, EnvironmentProviders} from '@angular/core';
 import {BEFORE_APP_SERIALIZED} from '@angular/platform-server';
 import {StatusCodeService} from '@anglr/common';
 import fs from 'fs';
 
 /**
+ * Providers for server side rendered app
+ */
+export interface ServerRenderProviders
+{
+    /**
+     * Additional platform providers
+     */
+    platformProviders?: StaticProvider[];
+
+    /**
+     * Additional app providers
+     */
+    appProviders?: (Provider|EnvironmentProviders)[];
+}
+
+/**
  * Interface describing options for server render
  */
-export interface ServerRenderOptions
+export interface ServerRenderOptions extends ServerRenderProviders
 {
     /**
      * Html document that should be rendered
@@ -17,11 +33,6 @@ export interface ServerRenderOptions
      * Url that is being rendered
      */
     url?: string;
-
-    /**
-     * Extra providers
-     */
-    extraProviders?: StaticProvider[];
 }
 
 /**
@@ -41,15 +52,10 @@ function getDocument(filePath: string): string
  * Returns function used for rendering app on server
  * @param getRenderPromise - Callback used for promise for rendered app into string
  * @param getProvidersCallback - Callback called when trying to build server providers
- * @param extraProviders - Extra providers used within mainModule
  */
 export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options: ServerRenderOptions) => Promise<string>,
-                                                     getProvidersCallback?: (additionalData: TAdditionalData) => StaticProvider[],
-                                                     extraProviders?: StaticProvider[]): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string|null, result?: {html: string, statusCode?: number|null|undefined}) => void) => void
+                                                     getProvidersCallback?: (additionalData: TAdditionalData) => ServerRenderProviders): (index: string, url: string, additionalData: TAdditionalData, callback: (error: string|null, result?: {html: string, statusCode?: number|null|undefined}) => void) => void
 {
-    extraProviders = extraProviders || [];
-    getProvidersCallback = getProvidersCallback || (() => []);
-
     /**
      * Renders application
      */
@@ -59,34 +65,41 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
 
         try
         {
-            extraProviders = extraProviders!
-                .concat(
-                [
-                    <FactoryProvider>
+            const appProviders: (Provider|EnvironmentProviders)[] = 
+            [
+                <FactoryProvider>
+                {
+                    provide: BEFORE_APP_SERIALIZED,
+                    useFactory: (injector: Injector) =>
                     {
-                        provide: BEFORE_APP_SERIALIZED,
-                        useFactory: (injector: Injector) =>
+                        return () =>
                         {
-                            return () =>
+                            const statusCodeService = injector.get(StatusCodeService);
+                            
+                            if(statusCodeService)
                             {
-                                const statusCodeService = injector.get(StatusCodeService);
-                                
-                                if(statusCodeService)
-                                {
-                                    statusCode = statusCodeService.statusCode;
-                                }
-                            };
-                        },
-                        deps: [Injector],
-                        multi: true
-                    }
-                ])
-                .concat(getProvidersCallback!(additionalData));
+                                statusCode = statusCodeService.statusCode;
+                            }
+                        };
+                    },
+                    deps: [Injector],
+                    multi: true
+                }
+            ];
+            
+            const additionalProviders = getProvidersCallback?.(additionalData) ??
+            {
+                appProviders: [],
+                platformProviders: [],
+            };
+
+            additionalProviders.appProviders?.push(...appProviders);
 
             getRenderPromise({
                                  document: getDocument(indexPath),
                                  url,
-                                 extraProviders
+                                 appProviders: additionalProviders.appProviders,
+                                 platformProviders: additionalProviders.platformProviders,
                              })
                 .catch(rejection =>
                 {
@@ -97,7 +110,7 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
                     callback(null,
                              {
                                  html: html ?? '',
-                                 statusCode: statusCode
+                                 statusCode: statusCode,
                              });
                 });
         }

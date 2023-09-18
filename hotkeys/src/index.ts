@@ -1,1 +1,1 @@
-export * from './modules/serverHotkeys.module';
+export * from './components';

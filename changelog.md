@@ -1,5 +1,36 @@
 # Changelog
 
+## Version 9.0.0 (2023-09-18)
+
+### Features
+
+- new `HotkeysCheatsheetSAComponent` component, that is component used for displaying current active hotkeys as cheat cheet
+   - **implements**
+      - `OnInit`
+      - `OnDestroy`
+   - **inputs**
+      - `title` title displayed in header of cheat sheet
+   - **method**
+      - `toggleCheatSheet` toggles cheatsheet visibility
+- new `provideSsrProgressIndicator` function, that provides Server side progress indicator
+- new `ServerRenderProviders` interface
+   - `platformProviders` additional platform providers
+   - `appProviders` additional app providers
+
+### BREAKING CHANGES
+
+- minimal supported version of `@anglr/common` is `18.0.0`
+- minimal supported version of `angular2-hotkeys` is `16.0.1`
+- minimal supported version of `tslib` is `2.6.1`
+- removed `ServerHotkeysModule` module, not needed anymore
+- removed `ServerProvidersModule` module, use `provideSsrProgressIndicator` instead
+- `ssrProgressIndicatorFactory` changed signature, now only can be used in DI context (constructor or factory functions)
+- `serverRenderFactory` changed signature, removed last parameter, use `getProvidersCallback` to provide extra providers
+- updated `ServerRenderOptions`
+   - **extends**
+      - `ServerRenderOptions`
+   - `extraProviders` replaced with `platformProviders` and `appProviders`
+
 ## Version 8.0.0 (2023-06-05)
 
 ### BREAKING CHANGES
