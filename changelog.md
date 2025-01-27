@@ -13,9 +13,12 @@
 
 ### BREAKING CHANGES
 
-- minimal supported version of `@anglr/common` is `18.0.0`
+- minimal supported version of `NodeJs` is `18`
+- minimal supported version of `@angular` is `19.1.0`
+- minimal supported version of `@anglr/common` is `22.0.0`
+- minimal supported version of `@jscrpt/common` is `7.0.0`
 - minimal supported version of `angular2-hotkeys` is `16.0.1`
-- minimal supported version of `tslib` is `2.6.1`
+- minimal supported version of `tslib` is `2.8.1`
 - removed `ServerHotkeysModule` module, not needed anymore
 - removed `ServerProvidersModule` module, use `provideSsrProgressIndicator` instead
 - `ssrProgressIndicatorFactory` changed signature, now only can be used in DI context (constructor or factory functions)

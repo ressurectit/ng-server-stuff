@@ -65,7 +65,7 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
 
         try
         {
-            const appProviders: (Provider|EnvironmentProviders)[] = 
+            const appProviders: (Provider|EnvironmentProviders)[] =
             [
                 <FactoryProvider>
                 {
@@ -75,7 +75,7 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
                         return () =>
                         {
                             const statusCodeService = injector.get(StatusCodeService);
-                            
+
                             if(statusCodeService)
                             {
                                 statusCode = statusCodeService.statusCode;
@@ -86,7 +86,7 @@ export function serverRenderFactory<TAdditionalData>(getRenderPromise: (options:
                     multi: true
                 }
             ];
-            
+
             const additionalProviders = getProvidersCallback?.(additionalData) ??
             {
                 appProviders: [],
